@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="initial-scale=1">
 	<title>Score</title>
 </head>
 <body>
@@ -15,10 +16,23 @@
 			margin-left: 20px;
 			font-size: 2em;
 		}
+		h4{
+			font-size: 2em;
+			display: inline-block;
+		}
 		h5{
 			display: inline-block;
 			width: 150px;
 			margin-left: 20px;
+		}
+		@media (max-width: 500px) {
+			h5{
+				display: block;
+				font-size: 28px;
+			}
+			h4{
+				font-size: 1em;
+			}
 		}
 		h1, h3{
 			margin-left: 20px;
@@ -44,10 +58,15 @@
 	<span id="shoot_score"></span>
 	<br />
 	<div id="result-wrapper">
-		<span>
+		<h4>
 			Общий результат: 
-		</span>
+		</h4>
 		<span id="result"></span>
+		<br />
+		<h4>
+			Выполнена норма:
+		</h4>
+		<span id="norm"></span>
 	</div>
 
 	<script>
@@ -480,8 +499,43 @@
 		function getResult(){
 			let run = +document.getElementById('time_score').innerHTML;
 			let shoot = +document.getElementById('shoot_score').innerHTML;
+			
+			let norm = run + shoot;
 
-			document.getElementById('result').innerHTML = run + shoot;
+			if((norm >= 2000) && (run >= 700) && (shoot >= 700)){
+				writeResult(norm, "МC");
+				return;
+			}
+
+			if((norm >= 1800) && (run >= 600) && (shoot >= 600)){
+				writeResult(norm, "КМС");
+				return;
+			}
+
+			if(norm >= 1600){
+				writeResult(norm, "I Разряд");
+				return;
+			}
+
+			if(norm >= 1400){
+				writeResult(norm, "II Разряд");
+				return;
+			}
+
+			if(norm >= 1200){
+				writeResult(norm, "III Разряд");
+				return;
+			}
+
+			writeResult(norm, "none");
+
+
+		}
+		
+		function writeResult(res, norm){
+			document.getElementById('result').innerHTML = res;
+
+			document.getElementById('norm').innerHTML = norm;
 		}
 
 
