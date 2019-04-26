@@ -831,6 +831,15 @@
 		  var resTime = Set.manRun[time.value.replace(":", "")];
 		  var resShoot = Set.manShoot[shoot.value];
 
+			
+		  if (resTime == undefined) {
+		  	resTime = 0;
+		  }	
+		  
+		  if (resShoot == undefined) {
+		  	resShoot = 0;
+		  }
+
 		  document.getElementById('time_score').innerHTML = resTime;
 		  document.getElementById('shoot_score').innerHTML = resShoot;
 		  document.getElementById('result').innerHTML = 
@@ -843,28 +852,8 @@
 		  toggleSet();
 		});
 
-		time.addEventListener("input", (e) => {
-		  let value = +e.target.value.replace(":","");
-		  value = Set.manRun[value.toString()];
-
-		  if(value == undefined) {
-		  	value = "0";
-		  }
-
-		  document.getElementById('time_score').innerHTML = value;
-		  getResult();
-		});
-
-		shoot.addEventListener("input", (e) => {
-		  let value = Set.manShoot[e.target.value];
-			
-		  if(value == undefined) {
-		  	value = "0";
-		  }
-		
-		  document.getElementById('shoot_score').innerHTML = value;
-		  getResult();
-		});
+		time.addEventListener("input", refreshResults);
+		shoot.addEventListener("input", refreshResults);
 
 		function getResult(){
 			let run = +document.getElementById('time_score').innerHTML;
@@ -898,12 +887,10 @@
 			}
 
 			writeResult(norm, "none");
-
 		}
 		
 		function writeResult(res, norm){
 			document.getElementById('result').innerHTML = res;
-
 			document.getElementById('norm').innerHTML = norm;
 		}
 
