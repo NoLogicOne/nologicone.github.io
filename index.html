@@ -45,32 +45,12 @@
 		#result-wrapper{
 			margin-top: 40px;
 		}
-/*		#target_popup_wrapper{
-			position: absolute;
-			width: 100vw;
-			height: 100vh;
-			top: 0;
-			left: 0;
-			display: none;
-		}
-		#target_popup{
-			text-align: center;
-		}
-		#target_popup label input,
-		#target_popup label h3{
-			display: inline-block;
-			text-align: center;
-			margin-left: 50px;
-		}
-		#target_popup_wrapper:target{
-			display: block;
-		}
-*/
+
 	</style>
 	
 	<h1>Служебное двоеборье</h1>
 	<button id="popup">
-		<h2>Имею цель по очкам</h2>
+		<h2>Цель</h2>
 	</button>
 	<h3>Введите результаты забега и узнайте свои очки!</h3>
 	<h3>Чтобы изменить вид спорта, кликнуть по названию</h3>
@@ -965,7 +945,7 @@
 					targetScore = main;
 
 					if(!targetExist){
-						target.innerHTML = "<h2>Имею цель по очкам</h2>"
+						target.innerHTML = "<h2>Цель</h2>"
 					}
 			  	});
 			}
