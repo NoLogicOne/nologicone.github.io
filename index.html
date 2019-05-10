@@ -37,15 +37,43 @@
 		h1, h3{
 			margin-left: 20px;
 		}
+		button {
+			position: absolute;
+			right: 10px;
+			top: 10px;
+		}
 		#result-wrapper{
 			margin-top: 40px;
 		}
-
+/*		#target_popup_wrapper{
+			position: absolute;
+			width: 100vw;
+			height: 100vh;
+			top: 0;
+			left: 0;
+			display: none;
+		}
+		#target_popup{
+			text-align: center;
+		}
+		#target_popup label input,
+		#target_popup label h3{
+			display: inline-block;
+			text-align: center;
+			margin-left: 50px;
+		}
+		#target_popup_wrapper:target{
+			display: block;
+		}
+*/
 	</style>
 	
 	<h1>Служебное двоеборье</h1>
+	<button id="popup">
+		<h2>Имею цель по очкам</h2>
+	</button>
 	<h3>Введите результаты забега и узнайте свои очки!</h3>
-	<h3>Чтобы именить вид спорта, кликнуть по названию</h3>
+	<h3>Чтобы изменить вид спорта, кликнуть по названию</h3>
 	<label for="">
 		<h5>Время:</h5> 
 		<input type="time" id="time">
@@ -71,6 +99,9 @@
 	</div>
 
 	<script>
+		var tergetExist = false;
+		var targetScore = 0;
+
 		var manRun1 = {
 			"845": 1735,
 			"846": 1727, 
@@ -469,7 +500,23 @@
 			"54": 406,
 			"77": 855,
 			"53": 387};
-		
+
+		function reverse(obj) {
+			let res = {}
+			for(var key in obj){
+				res[obj[key]] = key;
+			}
+			return  res
+		}
+
+		function extractValue(obj, value){
+			if(obj[value] !== undefined){
+				return obj[value]
+			} else {
+				return extractValue(obj, value + 1)
+			}
+		}
+
 		var manRun2 = {
 			"905":	1250,	
 			"949":	820,	
@@ -805,9 +852,11 @@
 			"50": 200,	
 			"33": 0,	}
 
+
 		var time = document.getElementById('time');
 		var shoot = document.getElementById('shoot');
 		var title = document.getElementsByTagName('h1')[0];
+		var target = document.getElementById('popup')
 
 		var Set = {
 			manRun: manRun1,
@@ -828,7 +877,7 @@
 		}
 
 		refreshResults = () => {
-		  var resTime = Set.manRun[time.value.replace(":", "")];
+		  var resTime = Set.manRun[+time.value.replace(":", "")];
 		  var resShoot = Set.manShoot[shoot.value];
 
 			
@@ -848,12 +897,79 @@
 		  getResult();
 		}
 
+		function onShootChange(e) {
+			if (!targetExist) return;
+			
+			let score = Set.manShoot[+e.target.value];
+			let wanted = targetScore - score;
+			
+			let reversScore = reverse(Set.manRun)
+			let newTime = ""
+			try{
+				newTime = extractValue(reversScore, wanted)
+			} catch(e) {
+				newTime = "845"
+			}
+
+			let minutes = newTime.substring(0, newTime.length - 2)
+			if (minutes.length < 2) {
+				minutes = "0" + minutes
+			}
+			
+			newTime = "" 
+				+ minutes
+				+ ":"
+				+ newTime.substring(newTime.length - 2)
+			
+			time.value = newTime
+			refreshResults()	
+		}
+
+		function onRunChange(e) {
+			if (!targetExist) return;
+			
+			let score = Set.manRun[+(e.target.value).replace(":", "")];
+			let wanted = targetScore - score;
+			
+			let reversScore = reverse(Set.manShoot)
+			let newShoot = 0
+			try{
+				newShoot = extractValue(reversScore, wanted)
+			} catch(e) {
+				newShoot = 100
+			}
+
+			shoot.value = newShoot
+			refreshResults()	
+		}
+
 		title.addEventListener('click', (e) => {
 		  toggleSet();
 		});
 
 		time.addEventListener("input", refreshResults);
+		time.addEventListener("input", onRunChange);
 		shoot.addEventListener("input", refreshResults);
+		shoot.addEventListener("input", onShootChange);
+		target.addEventListener("click", (e) => {
+			if(/\<input/.test(target.innerHTML)){
+				if (e.target.nodeName == "input"){
+					return;
+				}
+			}else{
+			  	target.innerHTML = "<input id='main' type='number'>"
+			  	document.getElementById('main').addEventListener("blur", (e) => {
+					var main = +document.getElementById('main').value;
+					target.innerHTML = "<h2>Цель: " + main + "</h2>"
+					targetExist = !!main;
+					targetScore = main;
+
+					if(!targetExist){
+						target.innerHTML = "<h2>Имею цель по очкам</h2>"
+					}
+			  	});
+			}
+		});
 
 		function getResult(){
 			let run = +document.getElementById('time_score').innerHTML;
@@ -894,7 +1010,7 @@
 			document.getElementById('norm').innerHTML = norm;
 		}
 
-
+		// document.getElementById('popup').click()
 		
 	</script>
 </body>
