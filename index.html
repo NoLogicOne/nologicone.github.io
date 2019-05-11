@@ -77,9 +77,10 @@
 		</h4>
 		<span id="norm"></span>
 	</div>
+	<div class="temp">Средний темп бега на 1км, при условии общего времени стрельбы 50с: <span id="temp"></span></div>
 
 	<script>
-		var tergetExist = false;
+		var targetExist = false;
 		var targetScore = 0;
 
 		var manRun1 = {
@@ -422,7 +423,7 @@
 			"97": 1300, 
 			"73": 775,
 			"49": 311,	
-			"96": 275,
+			"96": 1275,
 			"72": 755,
 			"48": 292,
 			"95": 1250,
@@ -873,6 +874,7 @@
 		  document.getElementById('shoot_score').innerHTML = resShoot;
 		  document.getElementById('result').innerHTML = 
 		  	resTime + resShoot;
+		  document.getElementById('temp').innerHTML = divideTime(time.value, 3);
 
 		  getResult();
 		}
@@ -938,6 +940,7 @@
 				}
 			}else{
 			  	target.innerHTML = "<input id='main' type='number'>"
+			  	document.getElementById('main').focus();
 			  	document.getElementById('main').addEventListener("blur", (e) => {
 					var main = +document.getElementById('main').value;
 					target.innerHTML = "<h2>Цель: " + main + "</h2>"
@@ -983,6 +986,22 @@
 			}
 
 			writeResult(norm, "none");
+		}
+
+		function divideTime(timeString, count){
+			timeString = timeString.replace(":", "");
+
+			let minutes = +timeString.substring(0, timeString.length - 2);
+			let seconds = +timeString.substring(timeString.length - 2);
+
+			let allSeconds = minutes * 60 + seconds;
+			let partTime = (allSeconds - 50) / count | 0
+			
+			seconds = partTime % 60
+			minutes = (partTime - seconds) / 60
+
+			return minutes + ":" + seconds
+
 		}
 		
 		function writeResult(res, norm){
